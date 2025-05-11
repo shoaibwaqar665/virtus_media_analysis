@@ -3,7 +3,7 @@ import re
 import json
 import requests
 
-url = "https://www.instagram.com/p/DJfG6OizhvO/"
+url = "https://www.instagram.com/p/DEw9cHwJYRI/"
 
 payload = {}
 headers = {
@@ -38,12 +38,16 @@ def parse_instagram_html(html_content):
         # Extract description (everything after the date)
         description = description_text.split('on ' + date_posted + ': ')[-1].strip('"')
         
+        # Extract hashtags using regex
+        hashtags = re.findall(r'#(\w+)', description)
+        
         return {
             'username': page_name,
             'likes': likes,
             'comments': comments,
             'date_posted': date_posted,
-            'description': description
+            'description': description,
+            'hashtags': hashtags
         }
     
     return None
@@ -63,6 +67,8 @@ if __name__ == "__main__":
         print("Date Posted:", result['date_posted'])
         print("\nDescription:")
         print(result['description'])
+        print("\nHashtags:")
+        print(result['hashtags'])
     else:
         print("Failed to parse Instagram content") 
 
