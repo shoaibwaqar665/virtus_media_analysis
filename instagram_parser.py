@@ -39,7 +39,7 @@ def parse_instagram_html(html_content):
         description = description_text.split('on ' + date_posted + ': ')[-1].strip('"')
         
         return {
-            'page_name': page_name,
+            'username': page_name,
             'likes': likes,
             'comments': comments,
             'date_posted': date_posted,
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     result = parse_instagram_html(html_content)
     
     if result:
-        print("Page Name:", result['page_name'])
+        print("Page Name:", result['username'])
         print("Likes:", result['likes'])
         print("Comments:", result['comments'])
         print("Date Posted:", result['date_posted'])
