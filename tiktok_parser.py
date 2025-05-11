@@ -2,6 +2,7 @@ import re
 import json
 import ast
 import requests
+from datetime import datetime
 
 url = "https://www.tiktok.com/@hellomatthewlong/video/7497368585073888555"
 
@@ -20,9 +21,15 @@ def extract_json_from_html(html_content):
     stats_match = re.search(r'"stats"\s*:\s*({.*?})\s*(,|\n|\r|\})', html_content, re.DOTALL)
     if stats_match:
         try:
-            result['stats'] = json.loads(stats_match.group(1))
+            stats_data = json.loads(stats_match.group(1))
+            # Map TikTok stats to StockTwits format
+            result['likes'] = stats_data.get('diggCount', 0)
+            result['reshared_count'] = stats_data.get('shareCount', 0)
+            result['comments'] = stats_data.get('commentCount', 0)
         except json.JSONDecodeError:
-            result['stats'] = "Invalid JSON in stats"
+            result['likes'] = 0
+            result['reshared_count'] = 0
+            result['comments'] = 0
 
     # Extract "authorName": "..."
     author_match = re.search(r'"authorName"\s*:\s*"([^"]+)"', html_content)
@@ -34,9 +41,9 @@ def extract_json_from_html(html_content):
     if challenges_match:
         try:
             challenges_data = json.loads(challenges_match.group(1))
-            result['hastags'] = [{"title": c["title"]} for c in challenges_data if "title" in c]
+            result['hashtags'] = [c["title"] for c in challenges_data if "title" in c]
         except json.JSONDecodeError:
-            result['hastags'] = "Invalid JSON in challenges"
+            result['hashtags'] = []
 
     # Extract "shareMeta": { ... }
     share_meta_match = re.search(r'"shareMeta"\s*:\s*({.*?})\s*(,|\n|\r|\})', html_content, re.DOTALL)
@@ -48,6 +55,9 @@ def extract_json_from_html(html_content):
             result['description'] = ast.literal_eval(f'"{desc}"')  # safely evaluates escape sequences
         except json.JSONDecodeError:
             result['description'] = "Invalid JSON in shareMeta"
+
+    # Add current timestamp in StockTwits format
+    result['date_posted'] = datetime.now().strftime("%B %d, %Y %I:%M %p")
 
     return result
 
