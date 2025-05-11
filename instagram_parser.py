@@ -68,4 +68,4 @@ if __name__ == "__main__":
 
     # Store output in json file
     with open('instagram_data.json', 'w', encoding='utf-8') as file:
-        json.dump(result, file, indent=2, ensure_ascii=False)
+        json.dump(result, file, indent=4, ensure_ascii=False)

@@ -18,7 +18,7 @@ results = [item for item in client.dataset(run["defaultDatasetId"]).iterate_item
 
 # Save results to a JSON file
 with open("facebook_posts.json", "w", encoding="utf-8") as f:
-    json.dump(results, f, ensure_ascii=False, indent=2)
+    json.dump(results, f, ensure_ascii=False, indent=4)
 
 print("✅ Data saved to facebook_posts.json")
 # 📚 Want to learn more 📖? Go to → https://docs.apify.com/api/client/python/docs/quick-start

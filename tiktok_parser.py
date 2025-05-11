@@ -26,10 +26,16 @@ def extract_json_from_html(html_content):
             result['likes'] = stats_data.get('diggCount', 0)
             result['reshared_count'] = stats_data.get('shareCount', 0)
             result['comments'] = stats_data.get('commentCount', 0)
+            result['play_count'] = stats_data.get('playCount', 0)
+            # Convert collectCount to integer
+            collect_count = stats_data.get('collectCount', '0')
+            result['collect_count'] = int(collect_count) if collect_count.isdigit() else 0
         except json.JSONDecodeError:
             result['likes'] = 0
             result['reshared_count'] = 0
             result['comments'] = 0
+            result['play_count'] = 0
+            result['collect_count'] = 0
 
     # Extract "authorName": "..."
     author_match = re.search(r'"authorName"\s*:\s*"([^"]+)"', html_content)
@@ -65,8 +71,8 @@ def extract_json_from_html(html_content):
 html_content = response.text  # directly using the HTML content from the request
 
 cleaned_data = extract_json_from_html(html_content)
-print(json.dumps(cleaned_data, indent=2))
+print(json.dumps(cleaned_data, indent=4))
 
 # Store output in JSON file
 with open('tiktok_data.json', 'w', encoding='utf-8') as file:
-    json.dump(cleaned_data, file, indent=2, ensure_ascii=False)
+    json.dump(cleaned_data, file, indent=4, ensure_ascii=False)

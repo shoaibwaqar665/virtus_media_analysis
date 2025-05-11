@@ -62,8 +62,8 @@ if __name__ == "__main__":
         html = f.read()
 
     result = extract_required_data(html)
-    print(json.dumps(result, indent=2, ensure_ascii=False))
+    print(json.dumps(result, indent=4, ensure_ascii=False))
     # write the result to a file
     with open("stocktwits_data.json", "w", encoding="utf-8") as f:
-        json.dump(result, f, indent=2, ensure_ascii=False)
+        json.dump(result, f, indent=4, ensure_ascii=False)
 
