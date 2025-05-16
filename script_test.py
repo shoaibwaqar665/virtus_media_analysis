@@ -2,7 +2,7 @@ import requests
 import json
 import os
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Load environment variables
 load_dotenv()
@@ -21,6 +21,37 @@ headers = {
     'Accept-Encoding': 'gzip, deflate, br, zstd',
     'Authorization': discord_token,
 }
+
+def get_active_members_at_message(message_id, all_messages, time_window_minutes=5):
+    """
+    Get members who were active around the time of a specific message
+    time_window_minutes: Number of minutes before and after the message to consider for activity
+    """
+    # Find the target message
+    target_message = None
+    for message in all_messages:
+        if message['message_id'] == message_id:
+            target_message = message
+            break
+    
+    if not target_message:
+        return []
+    
+    # Convert message timestamp to datetime
+    message_time = datetime.strptime(target_message['timestamp'], '%Y-%m-%d %H:%M:%S')
+    
+    # Calculate time window
+    start_time = message_time - timedelta(minutes=time_window_minutes)
+    end_time = message_time + timedelta(minutes=time_window_minutes)
+    
+    # Get all unique members who sent messages in the time window
+    active_members = set()
+    for message in all_messages:
+        msg_time = datetime.strptime(message['timestamp'], '%Y-%m-%d %H:%M:%S')
+        if start_time <= msg_time <= end_time:
+            active_members.add(message['username'])
+    
+    return list(active_members)
 
 def count_messages_after(message_id, all_messages):
     """
@@ -67,7 +98,7 @@ def get_channel_messages(channel_id, channel_name):
         
         # Create cleaned message dictionary
         cleaned_message = {
-            'message_id': message['id'],  # Add message ID
+            'message_id': message['id'],
             'username': username,
             'content': content.strip(),
             'timestamp': formatted_timestamp,
@@ -136,7 +167,12 @@ def main():
     print("\nTo count messages after a specific message, use:")
     print("count_messages_after('message_id_here', all_messages)")
     print(count_messages_after(message_id, all_messages))
-
+    
+    # Get active members at the time of the message
+    active_members = get_active_members_at_message(message_id, all_messages)
+    print("\nActive members at the time of the message:")
+    for member in active_members:
+        print(f"- {member}")
 
 if __name__ == "__main__":
     main()
