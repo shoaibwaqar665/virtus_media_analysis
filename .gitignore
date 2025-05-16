@@ -47,3 +47,5 @@ flask_session/
 # Logs
 *.log
 logs/
+
+discord_data.json
