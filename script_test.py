@@ -22,6 +22,22 @@ headers = {
     'Authorization': discord_token,
 }
 
+def count_messages_after(message_id, all_messages):
+    """
+    Count the number of messages sent after a specific message ID
+    """
+    found_message = False
+    count = 0
+    
+    for message in all_messages:
+        if message['message_id'] == message_id:
+            found_message = True
+            continue
+        if found_message:
+            count += 1
+    
+    return count if found_message else -1
+
 def get_channel_messages(channel_id, channel_name):
     channel_url = f"{base_url}/channels/{channel_id}"
     messages_url = f"{channel_url}/messages?limit=50"
@@ -51,6 +67,7 @@ def get_channel_messages(channel_id, channel_name):
         
         # Create cleaned message dictionary
         cleaned_message = {
+            'message_id': message['id'],  # Add message ID
             'username': username,
             'content': content.strip(),
             'timestamp': formatted_timestamp,
@@ -90,16 +107,16 @@ def main():
     
     # Process messages for each channel
     all_messages = []
-    for channel in channels_data:
-        channel_id = channel.get('id')
-        channel_name = channel.get('name')
-        print(f"\nProcessing Channel: {channel_name} (ID: {channel_id})")
-        
-        try:
-            channel_messages = get_channel_messages(channel_id, channel_name)
-            all_messages.extend(channel_messages)
-        except Exception as e:
-            print(f"Error processing channel {channel_name}: {str(e)}")
+    # for channel in channels_data:
+    channel_id = "749484877883375626"
+    channel_name = "💯│testimonials"
+    print(f"\nProcessing Channel: {channel_name} (ID: {channel_id})")
+    
+    try:
+        channel_messages = get_channel_messages(channel_id, channel_name)
+        all_messages.extend(channel_messages)
+    except Exception as e:
+        print(f"Error processing channel {channel_name}: {str(e)}")
     
     # Create final data structure
     final_data = {
@@ -113,6 +130,13 @@ def main():
         json.dump(final_data, f, ensure_ascii=False, indent=4)
     
     print(f"\nData has been saved to discord_data.json")
+    
+    # Example of how to use the count_messages_after function
+    message_id = "1083173797089255505"
+    print("\nTo count messages after a specific message, use:")
+    print("count_messages_after('message_id_here', all_messages)")
+    print(count_messages_after(message_id, all_messages))
+
 
 if __name__ == "__main__":
     main()
