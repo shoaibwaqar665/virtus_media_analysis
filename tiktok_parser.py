@@ -4,7 +4,7 @@ import ast
 import requests
 from datetime import datetime
 
-url = "https://www.tiktok.com/@hellomatthewlong/video/7497368585073888555"
+url = "https://www.tiktok.com/@capital.growth/video/7489494201114184965"
 
 payload = {}
 headers = {

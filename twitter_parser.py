@@ -68,6 +68,6 @@ def extract_tweet_data(url):
 
 # Example usage
 if __name__ == "__main__":
-    url = "https://x.com/PennyboisTrades/status/1915491854076068273"
+    url = "https://x.com/PennyboisTrades/status/1917716764244181223"
     tweet_data = extract_tweet_data(url)
     print(json.dumps(tweet_data, indent=4))

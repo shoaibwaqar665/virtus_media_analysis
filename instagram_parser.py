@@ -3,7 +3,7 @@ import re
 import json
 import requests
 
-url = "https://www.instagram.com/p/DEw9cHwJYRI/"
+url = "https://www.instagram.com/reel/DIB_Mo5yR0F/"
 
 payload = {}
 headers = {

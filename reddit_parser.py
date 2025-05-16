@@ -2,7 +2,11 @@ import requests
 import json
 
 # Example: fetch Reddit data from a subreddit
-url = "https://www.reddit.com/r/Killtony/comments/1khfogp/met_the_skanks_tonight.json"
+#  remove last '/' from the url using string manipulation
+url = "https://www.reddit.com/r/pennystocks/comments/1judcea/ive_developed_a_new_watchlist_of_stocks_to_keep/"
+url = url[:-1]
+url = url + ".json"
+print(url)
 headers = {'User-Agent': 'Mozilla/5.0'}
 
 # Custom headers to avoid 429 Too Many Requests or 403 Forbidden
