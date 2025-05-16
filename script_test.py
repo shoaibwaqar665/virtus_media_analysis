@@ -7,10 +7,7 @@ from datetime import datetime
 # Load environment variables
 load_dotenv()
 
-channel_id = "749484877883375626"
 base_url = "https://discord.com/api/v9"
-channel_url = f"{base_url}/channels/{channel_id}"
-messages_url = f"{channel_url}/messages?limit=50"
 
 # Get token from environment variable
 discord_token = os.getenv('DISCORD_TOKEN')
@@ -25,57 +22,17 @@ headers = {
     'Authorization': discord_token,
 }
 
-# First get channel info to get guild_id
-channel_response = requests.get(channel_url, headers=headers)
-channel_data = channel_response.json()
-guild_id = channel_data.get('guild_id')
-channel_name = channel_data.get('name')
-
-# Get guild (server) info
-guild_url = f"{base_url}/guilds/{guild_id}"
-guild_response = requests.get(guild_url, headers=headers)
-guild_data = guild_response.json()
-server_name = guild_data.get('name')
-
-# Get all channels in the server
-channels_url = f"{base_url}/guilds/{guild_id}/channels"
-channels_response = requests.get(channels_url, headers=headers)
-channels_data = channels_response.json()
-
-print(f"\nServer Information:")
-print(f"Server Name: {server_name}")
-print(f"Server ID: {guild_id}")
-print(f"\nCurrent Channel:")
-print(f"Channel Name: {channel_name}")
-print(f"Channel ID: {channel_id}")
-
-print(f"\nAll Channels in Server:")
-for channel in channels_data:
-    print(f"Channel Name: {channel.get('name')} (ID: {channel.get('id')})")
-
-# Get messages
-messages_response = requests.get(messages_url, headers=headers)
-messages_data = messages_response.json()
-
-# Add server and channel info to the data
-data_with_info = {
-    'server_name': server_name,
-    'server_id': guild_id,
-    'channel_name': channel_name,
-    'channel_id': channel_id,
-    'all_channels': channels_data,
-    'messages': messages_data
-}
-
-# Write the response to a file
-with open('discord_data.json', 'w') as f:
-    json.dump(data_with_info, f, ensure_ascii=False, indent=4)
-
-def clean_discord_data(data):
-    # Read the JSON file
-    cleaned_messages = []
+def get_channel_messages(channel_id, channel_name):
+    channel_url = f"{base_url}/channels/{channel_id}"
+    messages_url = f"{channel_url}/messages?limit=50"
     
-    for message in data:
+    # Get messages
+    messages_response = requests.get(messages_url, headers=headers)
+    messages_data = messages_response.json()
+    
+    # Clean messages
+    cleaned_messages = []
+    for message in messages_data:
         # Calculate total reactions (handle case where reactions field doesn't exist)
         total_reactions = sum(reaction['count'] for reaction in message.get('reactions', []))
         
@@ -97,16 +54,66 @@ def clean_discord_data(data):
             'username': username,
             'content': content.strip(),
             'timestamp': formatted_timestamp,
-            'total_reactions': total_reactions
+            'total_reactions': total_reactions,
+            'channel_name': channel_name,
+            'channel_id': channel_id
         }
         
         cleaned_messages.append(cleaned_message)
     
     return cleaned_messages
 
-cleaned_data = clean_discord_data(data_with_info['messages'])
+def main():
+    # Get server info using the first channel ID
+    channel_id = "749484877883375626"  # Initial channel ID to get server info
+    channel_url = f"{base_url}/channels/{channel_id}"
+    
+    # Get channel info to get guild_id
+    channel_response = requests.get(channel_url, headers=headers)
+    channel_data = channel_response.json()
+    guild_id = channel_data.get('guild_id')
+    
+    # Get guild (server) info
+    guild_url = f"{base_url}/guilds/{guild_id}"
+    guild_response = requests.get(guild_url, headers=headers)
+    guild_data = guild_response.json()
+    server_name = guild_data.get('name')
+    
+    # Get all channels in the server
+    channels_url = f"{base_url}/guilds/{guild_id}/channels"
+    channels_response = requests.get(channels_url, headers=headers)
+    channels_data = channels_response.json()
+    
+    print(f"\nServer Information:")
+    print(f"Server Name: {server_name}")
+    print(f"Server ID: {guild_id}")
+    
+    # Process messages for each channel
+    all_messages = []
+    for channel in channels_data:
+        channel_id = channel.get('id')
+        channel_name = channel.get('name')
+        print(f"\nProcessing Channel: {channel_name} (ID: {channel_id})")
+        
+        try:
+            channel_messages = get_channel_messages(channel_id, channel_name)
+            all_messages.extend(channel_messages)
+        except Exception as e:
+            print(f"Error processing channel {channel_name}: {str(e)}")
+    
+    # Create final data structure
+    final_data = {
+        'server_name': server_name,
+        'server_id': guild_id,
+        'messages': all_messages
+    }
+    
+    # Write the cleaned data to a file
+    with open('discord_data.json', 'w', encoding='utf-8') as f:
+        json.dump(final_data, f, ensure_ascii=False, indent=4)
+    
+    print(f"\nData has been saved to discord_data.json")
 
-# Write the cleaned data to a file
-with open('discord_data.json', 'w', encoding='utf-8') as f:
-    json.dump(cleaned_data, f, ensure_ascii=False, indent=4)
+if __name__ == "__main__":
+    main()
 
