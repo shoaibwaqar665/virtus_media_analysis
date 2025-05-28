@@ -35,6 +35,40 @@ def extract_facebook_data(text,url):
     else:
         return None
 
+
+def extract_facebook_data_from_reel_response(text):
+    """
+    Extract specific data from Facebook response using regex patterns
+    """
+    try:
+        # Pattern for username
+        username_pattern = r'"User\\",\\"name\\":\\"([^"]+)"'
+        # Pattern for reactions/likes
+        reactions_pattern = r'"likers":\{"count":(\d+)\}'
+        # Pattern for comments
+        comments_pattern = r'"total_comment_count":(\d+)'
+        # Pattern for shares
+        shares_pattern = r'"share_count_reduced":"(\d+)"'
+
+        # Extract data using patterns
+        username_match = re.search(username_pattern, text)
+        reactions_match = re.search(reactions_pattern, text)
+        comments_match = re.search(comments_pattern, text)
+        shares_match = re.search(shares_pattern, text)
+
+        # Create data dictionary
+        data = {
+            'username': username_match.group(1) if username_match else None,
+            'reactions': reactions_match.group(1) if reactions_match else None,
+            'comments': comments_match.group(1) if comments_match else None,
+            'shares': shares_match.group(1) if shares_match else None,
+            'platform': 'facebook',
+        }
+
+        return data
+    except Exception as e:
+        print(f"Error extracting data: {str(e)}")
+        return None
 def extract_page_name(url):
     """
     Extract the page name from a Facebook URL.
@@ -72,7 +106,10 @@ def handle_response(response, responses, reel_id):
             
             # Check if the response contains our target ID
             if reel_id in str(response_data):
-                responses.append(response_data)
+                # Extract specific data from the response
+                extracted_data = extract_facebook_data_from_reel_response(str(response_data))
+                if extracted_data:
+                    responses.append(extracted_data)
                 print(f"Captured response from: {response.url}")
     except Exception as e:
         print(f"Error handling response from {response.url}: {str(e)}")
@@ -105,13 +142,12 @@ def extract_data():
             print("Escape key pressed, dialog should be closed.")
             time.sleep(5)
             
-            # Write responses to file with reel ID in filename
-            filename = f'reel_responses_{reel_id}.json'
-            with open(filename, 'w', encoding='utf-8') as f:
-                for response in responses:
-                    f.write(json.dumps(response, indent=4))
-                    
-            
+            # Write only extracted data to file
+            if responses:
+                filename = f'reel_data_{reel_id}.json'
+                with open(filename, 'w', encoding='utf-8') as f:
+                    json.dump(responses[0], f, indent=4)  # Save only the first extracted data
+                print(f"Saved extracted data to {filename}")
             
             browser.close()
             return
