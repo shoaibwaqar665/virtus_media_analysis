@@ -1,22 +1,25 @@
 import re
+from datetime import datetime
 
 def extract_facebook_data(text):
-    # Define the regex pattern
-    pattern = r'All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
+    # Define the regex pattern for time and reactions
+    pattern = r'(\d+h|\d+m)\s*·\s*Shared with Public.*?All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
     
     # Search for the pattern in the text
     match = re.search(pattern, text, re.DOTALL)
     
     if match:
         # Extract the matched groups
-        reactions = match.group(1)
-        comments = match.group(2)
-        shares = match.group(3)
+        time = match.group(1)  # e.g., "3h" or "45m"
+        reactions = match.group(2)
+        comments = match.group(3)
+        shares = match.group(4)
         
         # Create a dictionary with the extracted data
+        # convert the time in todays date and format should be April 4, 2025
+        today = datetime.now().strftime("%B %d, %Y")
         data = {
-            # 'page_title': 'Saeen To Saeen, Saeen Ka PAGE Bhi Saeen. =p*',
-            # 'post_text': 'ہندوستان کی جانب سے مسلسل ڈرون حملے،عاطف اسلم اور ساحر علی بگا راولپنڈی طلب۔۔',
+            'time': today,
             'reactions': reactions,
             'comments': comments,
             'shares': shares
@@ -27,7 +30,7 @@ def extract_facebook_data(text):
         return None
 
 def main():
-    # Sample text (you can replace this with your actual text)
+    # Read text from file
     with open('fb_data.txt', 'r') as f:
         sample_text = f.read()
     
@@ -36,8 +39,7 @@ def main():
     
     if result:
         print("Extracted Data:")
-        # print(f"Page Title: {result['page_title']}")
-        # print(f"Post Text: {result['post_text']}")
+        print(f"Time: {result['time']}")
         print(f"Reactions: {result['reactions']}")
         print(f"Comments: {result['comments']}")
         print(f"Shares: {result['shares']}")
