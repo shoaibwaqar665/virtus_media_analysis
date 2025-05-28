@@ -1,5 +1,32 @@
 from patchright.sync_api import sync_playwright
 import time 
+import re
+
+def extract_facebook_data(text):
+    # Define the regex pattern
+    pattern = r'All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
+    
+    # Search for the pattern in the text
+    match = re.search(pattern, text, re.DOTALL)
+    
+    if match:
+        # Extract the matched groups
+        reactions = match.group(1)
+        comments = match.group(2)
+        shares = match.group(3)
+        
+        # Create a dictionary with the extracted data
+        data = {
+            
+            'reactions': reactions,
+            'comments': comments,
+            'shares': shares
+        }
+        
+        return data
+    else:
+        return None
+
 # Span and div class lists
 span_classes = "x1lliihq x6ikm8r x10wlt62 x1n2onr6 xlyipyv xuxw1ft x1j85h84"
 div_classes = ("x1i10hfl xjbqb8w x1ejq31n xd10rxx x1sy0etr x17r0tee x972fbf "
@@ -24,23 +51,28 @@ def extract_data():
             print("Escape key pressed, dialog should be closed.")
             time.sleep(10)
         
-        # Wait for the page to load manually if needed (e.g., to log in)
-        time.sleep(5)
-        # page.keyboard.press("Escape")
-        # print("Escape key pressed, dialog should be closed.")
-        # time.sleep(10)
-        print('Reactions data:')
-        reactions_data = page.query_selector("div[class*='xuk3077 x78zum5 x5yr21d x1hq5gj4 xt1id46 x1mh8g0r']")
-        print('reactions_data', reactions_data.text_content())
-        # write data in the file
-        with open('reactions_data.txt', 'w') as f:
-            f.write(reactions_data.text_content())
-        time.sleep(5)
+        # # Wait for the page to load manually if needed (e.g., to log in)
+        # time.sleep(5)
+        # # page.keyboard.press("Escape")
+        # # print("Escape key pressed, dialog should be closed.")
+        # # time.sleep(10)
+        # print('Reactions data:')
+        # reactions_data = page.query_selector("div[class*='xuk3077 x78zum5 x5yr21d x1hq5gj4 xt1id46 x1mh8g0r']")
+        # print('reactions_data', reactions_data.text_content())
+        # # write data in the file
+        # with open('reactions_data.txt', 'w') as f:
+        #     f.write(reactions_data.text_content())
+        # time.sleep(5)
         # for reaction in reactions_data:
         #     print('in loop')
         #     print('reaction', reaction.text_content())
-            
-
+        # time.sleep(3)
+        content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
+        extracted_data = extract_facebook_data(content_text.text_content())
+        print('extracted_data', extracted_data)
+        with open('fb_data.txt', 'w') as f:
+            f.write(content_text.text_content())
+       
         browser.close()
 
 if __name__ == "__main__":
