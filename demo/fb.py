@@ -6,7 +6,7 @@ client = ApifyClient("apify_api_sQN7ysWc9mp2jqcug7VMuxzeF98vTp0eMzaA")
 
 # Prepare the Actor input
 run_input = {
-    "startUrls": [{ "url": "https://www.facebook.com/SaeenKaPage/" }],
+    "startUrls": [{ "url": "https://www.facebook.com/epteckofficial" }],
     "resultsLimit": 20,
 }
 

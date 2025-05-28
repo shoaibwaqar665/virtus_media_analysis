@@ -4,6 +4,7 @@ import json
 from bs4 import BeautifulSoup
 import re
 from datetime import datetime
+from dbOperations import store_data_in_db
 
 def extract_tweet_data(url):
     username = url.split("/")[3]
@@ -58,6 +59,9 @@ def extract_tweet_data(url):
         "username": username,
         "hashtags": hashtags,
         "date_posted": time_data,
+        "url": url,
+        "platform": "Twitter",
+        
     }
 
     # Write to file
@@ -71,3 +75,4 @@ if __name__ == "__main__":
     url = "https://x.com/PennyboisTrades/status/1917716764244181223"
     tweet_data = extract_tweet_data(url)
     print(json.dumps(tweet_data, indent=4))
+    store_data_in_db(tweet_data)

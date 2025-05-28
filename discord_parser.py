@@ -3,6 +3,7 @@ import json
 import os
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from dbOperations import store_data_in_db
 
 # Load environment variables
 load_dotenv()
@@ -153,13 +154,15 @@ def main():
     final_data = {
         'server_name': server_name,
         'server_id': guild_id,
-        'messages': all_messages
+        'messages': all_messages,
+        'platform': 'discord',
+        
     }
-    
     # Write the cleaned data to a file
     with open('discord_data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, ensure_ascii=False, indent=4)
     
+    store_data_in_db(final_data)
     print(f"\nData has been saved to discord_data.json")
     
     # Example of how to use the count_messages_after function

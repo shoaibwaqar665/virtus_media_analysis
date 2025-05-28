@@ -3,6 +3,7 @@ import json
 import ast
 import requests
 from datetime import datetime
+from dbOperations import store_data_in_db
 
 url = "https://www.tiktok.com/@capital.growth/video/7489494201114184965"
 
@@ -29,6 +30,7 @@ def extract_json_from_html(html_content):
             result['play_count'] = stats_data.get('playCount', 0)
             # Convert collectCount to integer
             collect_count = stats_data.get('collectCount', '0')
+            result['platform'] = "TikTok"
             result['collect_count'] = int(collect_count) if collect_count.isdigit() else 0
         except json.JSONDecodeError:
             result['likes'] = 0
@@ -76,3 +78,5 @@ print(json.dumps(cleaned_data, indent=4))
 # Store output in JSON file
 with open('tiktok_data.json', 'w', encoding='utf-8') as file:
     json.dump(cleaned_data, file, indent=4, ensure_ascii=False)
+
+store_data_in_db(cleaned_data)

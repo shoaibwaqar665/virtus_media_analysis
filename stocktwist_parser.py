@@ -3,6 +3,7 @@ import re
 from bs4 import BeautifulSoup
 from datetime import datetime
 import requests
+from dbOperations import store_data_in_db
 
 url = "https://stocktwits.com/pbelo/message/612322988"
 
@@ -45,7 +46,8 @@ def extract_required_data(html_content):
                         "description": first_msg.get("body"),
                         "comments": first_msg.get("conversation", {}).get("replies"),
                         "date_posted": datetime.strptime(first_msg.get("created_at"), "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y %I:%M %p"),
-                        "username": first_msg.get("user", {}).get("username")
+                        "username": first_msg.get("user", {}).get("username"),
+                        "platform": "StockTwits"
                     }
                     
 
@@ -64,6 +66,7 @@ if __name__ == "__main__":
     result = extract_required_data(html)
     print(json.dumps(result, indent=4, ensure_ascii=False))
     # write the result to a file
-    with open("stocktwits_data.json", "w", encoding="utf-8") as f:
+    with open("stocktwist_data.json", "w", encoding="utf-8") as f:
         json.dump(result, f, indent=4, ensure_ascii=False)
+    store_data_in_db(result)
 

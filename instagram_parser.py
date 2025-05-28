@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import requests
+from dbOperations import store_data_in_db
 
 url = "https://www.instagram.com/reel/DIB_Mo5yR0F/"
 
@@ -47,7 +48,8 @@ def parse_instagram_html(html_content):
             'comments': comments,
             'date_posted': date_posted,
             'description': description,
-            'hashtags': hashtags
+            'hashtags': hashtags,
+            'platform': "Instagram"
         }
     
     return None
@@ -75,3 +77,5 @@ if __name__ == "__main__":
     # Store output in json file
     with open('instagram_data.json', 'w', encoding='utf-8') as file:
         json.dump(result, file, indent=4, ensure_ascii=False)
+
+    store_data_in_db(result)

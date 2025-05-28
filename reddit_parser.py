@@ -1,5 +1,6 @@
 import requests
 import json
+from dbOperations import store_data_in_db
 
 # Example: fetch Reddit data from a subreddit
 #  remove last '/' from the url using string manipulation
@@ -29,6 +30,7 @@ if response.status_code == 200:
                 "description": post_data.get("selftext", ""),
                 "likes": post_data.get("ups", 0),
                 "comments": post_data.get("num_comments", 0),
+                "platform": "Reddit"
             }
             filtered_posts.append(filtered_post)
 else:
@@ -39,3 +41,5 @@ print(filtered_posts[0])
 # Write the filtered posts to a JSON file
 with open('reddit_data.json', 'w') as f:
     json.dump(filtered_posts[0], f, indent=4, ensure_ascii=False)
+
+store_data_in_db(filtered_posts[0])
