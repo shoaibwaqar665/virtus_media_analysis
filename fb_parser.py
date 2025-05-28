@@ -2,6 +2,7 @@ from patchright.sync_api import sync_playwright
 import time 
 import re
 from datetime import datetime
+import json
 
 def extract_facebook_data(text,url):
     # Define the regex pattern for time and reactions
@@ -70,47 +71,80 @@ div_classes = ("x1i10hfl xjbqb8w x1ejq31n xd10rxx x1sy0etr x17r0tee x972fbf "
                "x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 "
                "x1hl2dhg xggy1nq x1a2a7pz x1heor9g xkrqix3 x1sur9pj x1s688f")
 
+def handle_response(response, responses):
+    """Handle network responses and log requests"""
+    try:
+        # Check for both GraphQL and the specific reel URL
+        if "reel/1147282673869577" in response.url:
+            # Get response data based on content type
+            content_type = response.headers.get('content-type', '')
+            
+            if 'application/json' in content_type:
+                response_data = response.json()
+            else:
+                # For non-JSON responses, get the text
+                response_data = response.text()
+            
+            # Check if the response contains our target ID
+            if "1147282673869577" in str(response_data):
+                responses.append({
+                    'url': response.url,
+                    'data': response_data,
+                    'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    'content_type': content_type
+                })
+                print(f"Captured response from: {response.url}")
+    except Exception as e:
+        print(f"Error handling response from {response.url}: {str(e)}")
+
 def extract_data():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, slow_mo=100)
         context = browser.new_context()
 
-        # Optional: load existing login session
+        # Enable request interception
         page = context.new_page()
-
+        
+        # List to store responses
+        responses = []
+        
+        # Listen for network requests
+        page.on("response", lambda response: handle_response(response, responses))
+        
         # Go to the Facebook Reel
-        # write code to get this part of url Lateefon.Ki.Dunya
-        navigation_url = "https://www.facebook.com/Lateefon.Ki.Dunya/posts/pfbid09aoZuGvjsB6VwAABZa5AKj6sfJEeVPkaqEnmsgX5GjRfphjiMJM9uXwdEiCXRRDzl?rdid=fe3NyqO7ooqxRPsD#"
+        navigation_url = "https://www.facebook.com/reel/1147282673869577"
         page.goto(navigation_url, timeout=60000)
+        
         # if navigation_url contains /reel then press escape key
         if "/reel" in navigation_url:
             page.keyboard.press("Escape")
             print("Escape key pressed, dialog should be closed.")
-            time.sleep(10)
+            time.sleep(5)
+            
+            # Write responses to file
+            with open('reel_responses.txt', 'a', encoding='utf-8') as f:
+                for response in responses:
+                    f.write(f"\nTimestamp: {response['timestamp']}\n")
+                    f.write(f"URL: {response['url']}\n")
+                    f.write(f"Content-Type: {response['content_type']}\n")
+                    if isinstance(response['data'], dict):
+                        f.write(f"Response: {json.dumps(response['data'], indent=2)}\n")
+                    else:
+                        f.write(f"Response: {response['data']}\n")
+                    f.write("-" * 80 + "\n")
+            
+            time.sleep(180)
+            browser.close()
+            return
         
-        # # Wait for the page to load manually if needed (e.g., to log in)
-        # time.sleep(5)
-        # # page.keyboard.press("Escape")
-        # # print("Escape key pressed, dialog should be closed.")
-        # # time.sleep(10)
-        # print('Reactions data:')
-        # reactions_data = page.query_selector("div[class*='xuk3077 x78zum5 x5yr21d x1hq5gj4 xt1id46 x1mh8g0r']")
-        # print('reactions_data', reactions_data.text_content())
-        # # write data in the file
-        # with open('reactions_data.txt', 'w') as f:
-        #     f.write(reactions_data.text_content())
-        # time.sleep(5)
-        # for reaction in reactions_data:
-        #     print('in loop')
-        #     print('reaction', reaction.text_content())
-        # time.sleep(3)
         content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
         extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
         print('extracted_data', extracted_data)
-        with open('fb_data.txt', 'w') as f:
-            f.write(content_text.text_content())
+        with open('fb_data.json', 'w') as f:
+            json.dump(extracted_data, f)
        
         browser.close()
+        return
 
 if __name__ == "__main__":
     extract_data()
