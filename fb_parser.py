@@ -50,32 +50,17 @@ def extract_page_name(url):
         # Split the URL by '/' and get the part after 'facebook.com'
         parts = url.split('/')
         print("URL parts:", parts)
-        
-        # Find the index of 'facebook.com'
-        # fb_index = parts.index('facebook.com')
-        # print("Facebook.com index:", fb_index)
-        
-        # # Get the next part which should be the page name
-        # page_name = parts[fb_index + 1]
-        # print("Extracted page name:", page_name)
-        
+      
         return parts[3]
     except (ValueError, IndexError) as e:
         print("Error occurred:", str(e))
         return None
 
-# Span and div class lists
-span_classes = "x1lliihq x6ikm8r x10wlt62 x1n2onr6 xlyipyv xuxw1ft x1j85h84"
-div_classes = ("x1i10hfl xjbqb8w x1ejq31n xd10rxx x1sy0etr x17r0tee x972fbf "
-               "xcfux6l x1qhh985 xm0m39n x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r "
-               "x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 "
-               "x1hl2dhg xggy1nq x1a2a7pz x1heor9g xkrqix3 x1sur9pj x1s688f")
-
-def handle_response(response, responses):
+def handle_response(response, responses, reel_id):
     """Handle network responses and log requests"""
     try:
-        # Check for both GraphQL and the specific reel URL
-        if "reel/1147282673869577" in response.url:
+        # Check for the reel URL with dynamic ID
+        if f"reel/{reel_id}" in response.url:
             # Get response data based on content type
             content_type = response.headers.get('content-type', '')
             
@@ -86,13 +71,8 @@ def handle_response(response, responses):
                 response_data = response.text()
             
             # Check if the response contains our target ID
-            if "1147282673869577" in str(response_data):
-                responses.append({
-                    'url': response.url,
-                    'data': response_data,
-                    'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    'content_type': content_type
-                })
+            if reel_id in str(response_data):
+                responses.append(response_data)
                 print(f"Captured response from: {response.url}")
     except Exception as e:
         print(f"Error handling response from {response.url}: {str(e)}")
@@ -108,11 +88,15 @@ def extract_data():
         # List to store responses
         responses = []
         
-        # Listen for network requests
-        page.on("response", lambda response: handle_response(response, responses))
+        # Extract reel ID from the URL
+        navigation_url = "https://www.facebook.com/reel/1147282673869577"
+        reel_id = navigation_url.split("reel/")[-1].split("?")[0].split("#")[0]
+        print(f"Monitoring requests for reel ID: {reel_id}")
+        
+        # Listen for network requests with the specific reel ID
+        page.on("response", lambda response: handle_response(response, responses, reel_id))
         
         # Go to the Facebook Reel
-        navigation_url = "https://www.facebook.com/reel/1147282673869577"
         page.goto(navigation_url, timeout=60000)
         
         # if navigation_url contains /reel then press escape key
@@ -121,19 +105,14 @@ def extract_data():
             print("Escape key pressed, dialog should be closed.")
             time.sleep(5)
             
-            # Write responses to file
-            with open('reel_responses.txt', 'a', encoding='utf-8') as f:
+            # Write responses to file with reel ID in filename
+            filename = f'reel_responses_{reel_id}.json'
+            with open(filename, 'w', encoding='utf-8') as f:
                 for response in responses:
-                    f.write(f"\nTimestamp: {response['timestamp']}\n")
-                    f.write(f"URL: {response['url']}\n")
-                    f.write(f"Content-Type: {response['content_type']}\n")
-                    if isinstance(response['data'], dict):
-                        f.write(f"Response: {json.dumps(response['data'], indent=2)}\n")
-                    else:
-                        f.write(f"Response: {response['data']}\n")
-                    f.write("-" * 80 + "\n")
+                    f.write(json.dumps(response, indent=4))
+                    
             
-            time.sleep(180)
+            
             browser.close()
             return
         
