@@ -28,6 +28,7 @@ def extract_facebook_data(text,url):
             'comments': comments,
             'shares': shares,
             'page_name': page_name,
+            'url': url,
             'platform': 'facebook'
         }
         
@@ -36,7 +37,7 @@ def extract_facebook_data(text,url):
         return None
 
 
-def extract_facebook_data_from_reel_response(text):
+def extract_facebook_data_from_reel_response(text,url):
     """
     Extract specific data from Facebook response using regex patterns
     """
@@ -79,6 +80,7 @@ def extract_facebook_data_from_reel_response(text):
             'reactions': reactions_match.group(1) if reactions_match else None,
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
+            'url': url,
             'platform': 'facebook',
         }
 
@@ -118,7 +120,7 @@ def extract_page_name(url):
         print("Error occurred:", str(e))
         return None
 
-def handle_response(response, responses, reel_id):
+def handle_response(response, responses, reel_id,url):
     """Handle network responses and log requests"""
     try:
         # Check for the reel URL with dynamic ID
@@ -135,7 +137,7 @@ def handle_response(response, responses, reel_id):
             # Check if the response contains our target ID
             if reel_id in str(response_data):
                 # Extract specific data from the response
-                extracted_data = extract_facebook_data_from_reel_response(str(response_data))
+                extracted_data = extract_facebook_data_from_reel_response(str(response_data),url)
                 if extracted_data:
                     responses.append(extracted_data)
                 print(f"Captured response from: {response.url}")
@@ -159,7 +161,7 @@ def extract_data():
         print(f"Monitoring requests for reel ID: {reel_id}")
         
         # Listen for network requests with the specific reel ID
-        page.on("response", lambda response: handle_response(response, responses, reel_id))
+        page.on("response", lambda response: handle_response(response, responses, reel_id, navigation_url))
         
         # Go to the Facebook Reel
         page.goto(navigation_url, timeout=60000)
