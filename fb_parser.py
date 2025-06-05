@@ -41,8 +41,26 @@ def extract_facebook_data_from_reel_response(text):
     Extract specific data from Facebook response using regex patterns
     """
     try:
-        # Pattern for username
-        username_pattern = r'"User\\",\\"name\\":\\"([^"]+)"'
+        # Print the raw text for debugging
+        print("Raw text:", text)
+        
+        # Try different username patterns
+        username_patterns = [
+            r'User\\",\\"name\\":\\"([^"]+)\\"',  # Original pattern
+            r'User\\",\\"name\\":\\"([^"]+)"',    # Without trailing backslash
+            r'name\\":\\"([^"]+)\\"',             # Simpler pattern
+            r'name\\":\\"([^"]+)"'                # Simplest pattern
+        ]
+        
+        username = None
+        for pattern in username_patterns:
+            match = re.search(pattern, text)
+            if match:
+                username = match.group(1)
+                print(f"Found username using pattern: {pattern}")
+                print(f"Match: {match.group(0)}")
+                break
+        
         # Pattern for reactions/likes
         reactions_pattern = r'"likers":\{"count":(\d+)\}'
         # Pattern for comments
@@ -50,25 +68,35 @@ def extract_facebook_data_from_reel_response(text):
         # Pattern for shares
         shares_pattern = r'"share_count_reduced":"(\d+)"'
 
-        # Extract data using patterns
-        username_match = re.search(username_pattern, text)
+        # Extract other data
         reactions_match = re.search(reactions_pattern, text)
         comments_match = re.search(comments_pattern, text)
         shares_match = re.search(shares_pattern, text)
 
         # Create data dictionary
         data = {
-            'username': username_match.group(1) if username_match else None,
+            'username': username,
             'reactions': reactions_match.group(1) if reactions_match else None,
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
             'platform': 'facebook',
         }
 
+        # Print debug information
+        print("\nExtracted data:")
+        print("Username:", username)
+        print("Reactions:", reactions_match.group(1) if reactions_match else None)
+        print("Comments:", comments_match.group(1) if comments_match else None)
+        print("Shares:", shares_match.group(1) if shares_match else None)
+
         return data
     except Exception as e:
         print(f"Error extracting data: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
         return None
+
 def extract_page_name(url):
     """
     Extract the page name from a Facebook URL.
