@@ -4,6 +4,8 @@ import re
 from datetime import datetime
 import json
 
+from dbOperations import store_data_in_db
+
 def extract_facebook_data(text,url):
     # Define the regex pattern for time and reactions
     pattern = r'All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
@@ -165,13 +167,14 @@ def extract_data():
                 filename = f'fb_data.json'
                 with open(filename, 'w', encoding='utf-8') as f:
                     json.dump(responses[0], f, indent=4, ensure_ascii=False)  # Save only the first extracted data
+                store_data_in_db(responses[0])
                
-            
             browser.close()
             return
         
         content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
         extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
+        store_data_in_db(extracted_data)
         
         with open('fb_data.json', 'w', encoding='utf-8') as f:
             json.dump(extracted_data, f, indent=4, ensure_ascii=False)

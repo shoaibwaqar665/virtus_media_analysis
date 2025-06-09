@@ -5,7 +5,7 @@ from datetime import datetime
 import requests
 from dbOperations import store_data_in_db
 
-url = "https://stocktwits.com/pbelo/message/612322988"
+
 
 payload = {}
 headers = {
@@ -13,11 +13,6 @@ headers = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
-response = requests.request("GET", url, headers=headers, data=payload)
-
-# write the response to a file
-with open('stocktwits.html', 'w') as f:
-    f.write(response.text)
 
 def extract_required_data(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -61,8 +56,9 @@ def extract_required_data(html_content):
 
 # Example usage
 if __name__ == "__main__":
-    with open("stocktwits.html", "r", encoding="utf-8") as f:
-        html = f.read()
+    url = "https://stocktwits.com/pbelo/message/612322988"
+    response = requests.request("GET", url, headers=headers, data=payload)
+    html = response.text
 
     result = extract_required_data(html)
     print(json.dumps(result, indent=4, ensure_ascii=False))
