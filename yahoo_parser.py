@@ -6,8 +6,8 @@ def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
     
     params = {
-        "interval": interval,     # '1d', '1wk', etc.
-        "range": range_period,    # '1mo', '1y', etc.
+        "interval": interval,
+        "range": range_period,
         "includePrePost": False,
         "events": "div,splits"
     }
@@ -40,23 +40,19 @@ def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
         }
         full_data.append(entry)
 
-    return full_data
+    # Sort data by date
+    full_data_sorted = sorted(full_data, key=lambda x: x["date"], reverse=True)
+
+    return full_data_sorted
 
 
 # Example Usage
 if __name__ == "__main__":
     symbol = "SHOT"
-    data = get_full_historical_data(symbol, range_period="1mo")  # Get last 3 months of data
-    for entry in data:
-        print(json.dumps(entry, indent=4))
-        print(entry["date"])
-        print(entry["open"])
-        print(entry["high"])
-        print(entry["low"])
-        print(entry["close"])
-        print(entry["volume"])
-        print(entry["adjclose"])
+    data = get_full_historical_data(symbol, range_period="3mo")
 
-# write the data to a file
-with open('yahoo_data.json', 'w', encoding='utf-8') as f:
-    json.dump(data, f, indent=4, ensure_ascii=False)
+    # Write sorted data to JSON file
+    with open('yahoo_data.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+    print("Data saved to yahoo_data.json")
