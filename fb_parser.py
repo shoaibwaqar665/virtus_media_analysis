@@ -130,57 +130,65 @@ def handle_response(response, responses, reel_id,url):
                 extracted_data = extract_facebook_data_from_reel_response(str(response_data),url)
                 if extracted_data:
                     responses.append(extracted_data)
+           
                
     except Exception as e:
         print(f"Error handling response from {response.url}: {str(e)}")
 
+all_results = []
 def extract_data():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False, slow_mo=100)
-        context = browser.new_context()
+    urls = [
+        "https://www.facebook.com/reel/1394965231510586",
+    ]
+    for url in urls:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=False, slow_mo=100)
+            context = browser.new_context()
 
-        # Enable request interception
-        page = context.new_page()
-        
-        # List to store responses
-        responses = []
-        
-        # Extract reel ID from the URL
-        navigation_url = "https://www.facebook.com/reel/1147282673869577"
-        reel_id = navigation_url.split("reel/")[-1].split("?")[0].split("#")[0]
-       
-        
-        # Listen for network requests with the specific reel ID
-        page.on("response", lambda response: handle_response(response, responses, reel_id, navigation_url))
-        
-        # Go to the Facebook Reel
-        page.goto(navigation_url, timeout=60000)
-        
-        # if navigation_url contains /reel then press escape key
-        if "/reel" in navigation_url:
-            page.keyboard.press("Escape")
-            print("Escape key pressed, dialog should be closed.")
-            time.sleep(5)
+            # Enable request interception
+            page = context.new_page()
             
-            # Write only extracted data to file
-            if responses:
-                filename = f'fb_data.json'
-                with open(filename, 'w', encoding='utf-8') as f:
-                    json.dump(responses[0], f, indent=4, ensure_ascii=False)  # Save only the first extracted data
-                store_data_in_db(responses[0])
-               
+            # List to store responses
+            
+            # Extract reel ID from the URL
+            navigation_url = url
+            reel_id = navigation_url.split("reel/")[-1].split("?")[0].split("#")[0]
+        
+            
+            # Listen for network requests with the specific reel ID
+            page.on("response", lambda response: handle_response(response, all_results, reel_id, navigation_url))
+            
+            # Go to the Facebook Reel
+            page.goto(navigation_url, timeout=60000)
+            
+            # if navigation_url contains /reel then press escape key
+            if "/reel" in navigation_url:
+                page.keyboard.press("Escape")
+                print("Escape key pressed, dialog should be closed.")
+                time.sleep(5)
+                
+                # Write only extracted data to file
+                
+                browser.close()
+                return
+            
+            content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
+            extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
+            if extracted_data:
+                all_results.append(extracted_data)
+        
             browser.close()
             return
         
-        content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
-        extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
-        store_data_in_db(extracted_data)
-        
-        with open('fb_data.json', 'w', encoding='utf-8') as f:
-            json.dump(extracted_data, f, indent=4, ensure_ascii=False)
-       
-        browser.close()
-        return
+    
+                
 
 if __name__ == "__main__":
+
     extract_data()
+    if all_results:
+        filename = f'fb_data.json'
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
+        # for result in all_results:
+        #     store_data_in_db(result)
