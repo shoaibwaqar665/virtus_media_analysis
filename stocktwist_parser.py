@@ -47,7 +47,8 @@ def extract_required_data(html_content):
                         "comments": first_msg.get("conversation", {}).get("replies"),
                         "date_posted": datetime.strptime(first_msg.get("created_at"), "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y %I:%M %p"),
                         "username": first_msg.get("user", {}).get("username"),
-                        "platform": "StockTwits"
+                        "platform": "StockTwits",
+                        "url": url
                     }
                     
 

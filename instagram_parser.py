@@ -49,7 +49,8 @@ def parse_instagram_html(html_content):
             'date_posted': date_posted,
             'description': description,
             'hashtags': hashtags,
-            'platform': "Instagram"
+            'platform': "Instagram",
+            'url': url
         }
     
     return None

@@ -30,7 +30,8 @@ if response.status_code == 200:
                 "description": post_data.get("selftext", ""),
                 "likes": post_data.get("ups", 0),
                 "comments": post_data.get("num_comments", 0),
-                "platform": "Reddit"
+                "platform": "Reddit",
+                "url": url
             }
             filtered_posts.append(filtered_post)
 else:

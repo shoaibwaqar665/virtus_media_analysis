@@ -31,6 +31,7 @@ def extract_json_from_html(html_content):
             # Convert collectCount to integer
             collect_count = stats_data.get('collectCount', '0')
             result['platform'] = "TikTok"
+            result['url'] = url
             result['collect_count'] = int(collect_count) if collect_count.isdigit() else 0
         except json.JSONDecodeError:
             result['likes'] = 0

@@ -29,7 +29,8 @@ def extract_facebook_data(text,url):
             'shares': shares,
             'page_name': page_name,
             'url': url,
-            'platform': 'facebook'
+            'platform': 'facebook',
+            'url': url
         }
         
         return data
@@ -81,7 +82,7 @@ def extract_facebook_data_from_reel_response(text,url):
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
             'url': url,
-            'platform': 'facebook',
+            'platform': 'facebook'
         }
 
         # Print debug information

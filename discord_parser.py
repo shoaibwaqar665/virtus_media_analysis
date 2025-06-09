@@ -105,7 +105,8 @@ def get_channel_messages(channel_id, channel_name):
             'timestamp': formatted_timestamp,
             'total_reactions': total_reactions,
             'channel_name': channel_name,
-            'channel_id': channel_id
+            'channel_id': channel_id,
+            'url': url
         }
         
         cleaned_messages.append(cleaned_message)
@@ -156,6 +157,7 @@ def main():
         'server_id': guild_id,
         'messages': all_messages,
         'platform': 'discord',
+        'url': url
         
     }
     # Write the cleaned data to a file
