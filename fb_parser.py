@@ -25,7 +25,7 @@ def extract_facebook_data(text,url):
         page_name = extract_page_name(url)
         data = {
             'time': today,
-            'reactions': reactions,
+            'likes': reactions,
             'comments': comments,
             'shares': shares,
             'page_name': page_name,
@@ -76,7 +76,7 @@ def extract_facebook_data_from_reel_response(text,url):
         # Create data dictionary
         data = {
             # 'username': username,
-            'reactions': reactions_match.group(1) if reactions_match else None,
+            'likes': reactions_match.group(1) if reactions_match else None,
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
             'url': url,
@@ -190,5 +190,5 @@ if __name__ == "__main__":
         filename = f'fb_data.json'
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
-        # for result in all_results:
-        #     store_data_in_db(result)
+        for result in all_results:
+            store_data_in_db(result)
