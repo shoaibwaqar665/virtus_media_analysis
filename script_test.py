@@ -1,34 +1,62 @@
 import requests
+import datetime
+import json
 
-PAGE_ID = "40796308305"
-ACCESS_TOKEN = "EAAKaI7xnyj0BO8bwh9FZAmnN8LYV3L2KJpNsQMJbxvHSRYBIdGZCe8cshBFZALju08aoCgDjYGWCBVPdTV5RdxZASHKN1TODd8UmC5y7FGKb0BpBRfsHuWNirtut6gYeNzbPMh0ZBTqqfoPSz3sXamdquZCHe6vM4yHqJwUWCM8ZAOuR1lUMuhD3pZA0bJZCxYpg7v7xCsSZCWMFCXjA9UPE7hkyzDs8JR9wZDZD"
+def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+    
+    params = {
+        "interval": interval,     # '1d', '1wk', etc.
+        "range": range_period,    # '1mo', '1y', etc.
+        "includePrePost": False,
+        "events": "div,splits"
+    }
 
-url = f"https://graph.facebook.com/v18.0/{PAGE_ID}/posts"
-params = {
-    "access_token": ACCESS_TOKEN,
-    "fields": "id,message,created_time,permalink_url,"
-              "comments.summary(true),likes.summary(true),shares"
-}
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
 
-res = requests.get(url, params=params)
+    response = requests.get(url, params=params, headers=headers)
+    if response.status_code != 200:
+        raise Exception(f"Failed to get data: {response.status_code}")
+    
+    data = response.json()
+    result = data["chart"]["result"][0]
 
-if res.ok:
-    data = res.json().get("data", [])
-    for post in data:
-        print("Post ID:", post.get("id"))
-        print("Message:", post.get("message"))
-        print("Created Time:", post.get("created_time"))
-        print("Link:", post.get("permalink_url"))
+    timestamps = result["timestamp"]
+    indicators = result["indicators"]["quote"][0]
+    adjclose = result["indicators"].get("adjclose", [{}])[0].get("adjclose", [None]*len(timestamps))
 
-        # Safely extract counts
-        comments_count = post.get("comments", {}).get("summary", {}).get("total_count", 0)
-        likes_count = post.get("likes", {}).get("summary", {}).get("total_count", 0)
-        shares_count = post.get("shares", {}).get("count", 0)
+    full_data = []
+    for i in range(len(timestamps)):
+        entry = {
+            "date": datetime.datetime.fromtimestamp(timestamps[i]).strftime('%Y-%m-%d'),
+            "open": indicators["open"][i],
+            "high": indicators["high"][i],
+            "low": indicators["low"][i],
+            "close": indicators["close"][i],
+            "volume": indicators["volume"][i],
+            "adjclose": adjclose[i]
+        }
+        full_data.append(entry)
 
-        print("Likes:", likes_count)
-        print("Comments:", comments_count)
-        print("Shares:", shares_count)
-        print("-" * 50)
-else:
-    print(f"Error: {res.status_code}")
-    print(res.text)
+    return full_data
+
+
+# Example Usage
+if __name__ == "__main__":
+    symbol = "SHOT"
+    data = get_full_historical_data(symbol, range_period="1mo")  # Get last 3 months of data
+    for entry in data:
+        print(json.dumps(entry, indent=4))
+        print(entry["date"])
+        print(entry["open"])
+        print(entry["high"])
+        print(entry["low"])
+        print(entry["close"])
+        print(entry["volume"])
+        print(entry["adjclose"])
+
+# write the data to a file
+with open('yahoo_data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=4, ensure_ascii=False)

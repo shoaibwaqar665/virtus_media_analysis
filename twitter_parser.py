@@ -16,7 +16,7 @@ def extract_tweet_data(url):
         context = browser.new_context()
         page = context.new_page()
         page.goto(url, timeout=60000)
-        time.sleep(15)  # Let JS render
+        time.sleep(5)  # Let JS render
         html = page.content()
         browser.close()
 
@@ -64,10 +64,6 @@ def extract_tweet_data(url):
         
     }
 
-    # Write to file
-    with open('twitter_data.json', 'w') as f:
-        json.dump(result, f, indent=4, ensure_ascii=False)
-
     return result
 
 # Example usage
@@ -95,5 +91,5 @@ if __name__ == "__main__":
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)
 
-        # for result in all_results:
-        #     store_data_in_db(result)
+        for result in all_results:
+            store_data_in_db(result)
