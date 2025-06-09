@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 from dbOperations import store_data_in_db
 
-url = "https://www.tiktok.com/@capital.growth/video/7489494201114184965"
+# url = "https://www.tiktok.com/@capital.growth/video/7489494201114184965"
 
 payload = {}
 headers = {
@@ -13,9 +13,9 @@ headers = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
-response = requests.get(url, headers=headers, data=payload)
+# response = requests.get(url, headers=headers, data=payload)
 
-def extract_json_from_html(html_content):
+def extract_json_from_html(html_content,url):
     result = {}
 
     # Extract "stats": { ... }
@@ -71,13 +71,38 @@ def extract_json_from_html(html_content):
     return result
 
 # Example usage
-html_content = response.text  # directly using the HTML content from the request
 
-cleaned_data = extract_json_from_html(html_content)
-print(json.dumps(cleaned_data, indent=4))
+# html_content = response.text  # directly using the HTML content from the request
 
-# Store output in JSON file
-with open('tiktok_data.json', 'w', encoding='utf-8') as file:
-    json.dump(cleaned_data, file, indent=4, ensure_ascii=False)
+# cleaned_data = extract_json_from_html(html_content)
+# print(json.dumps(cleaned_data, indent=4))
 
-store_data_in_db(cleaned_data)
+# # Store output in JSON file
+# with open('tiktok_data.json', 'w', encoding='utf-8') as file:
+#     json.dump(cleaned_data, file, indent=4, ensure_ascii=False)
+
+# store_data_in_db(cleaned_data)
+
+def extract_data():
+    urls = [
+        "https://www.tiktok.com/t/ZTjMKSuGg/",
+        "https://vm.tiktok.com/ZMBchpuPm/",
+        "https://www.tiktok.com/t/ZTjBHQea9/",
+    ]
+    all_results = []
+    for url in urls:
+        response = requests.get(url, headers=headers, data=payload)
+        html_content = response.text
+        cleaned_data = extract_json_from_html(html_content,url)
+        print(cleaned_data)
+        all_results.append(cleaned_data)
+        # write the result to a file
+        with open('tiktok_data.json', 'w', encoding='utf-8') as file:
+            json.dump(all_results, file, indent=4, ensure_ascii=False)
+
+    for result in all_results:
+        store_data_in_db(result)
+
+if __name__ == "__main__":
+    extract_data()
+
