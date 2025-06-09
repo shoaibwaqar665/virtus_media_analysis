@@ -56,14 +56,42 @@ def extract_required_data(html_content):
 
 # Example usage
 if __name__ == "__main__":
-    url = "https://stocktwits.com/pbelo/message/612322988"
-    response = requests.request("GET", url, headers=headers, data=payload)
-    html = response.text
+    urls = [
+        "https://stocktwits.com/pbelo/message/612322988",
+        "https://stocktwits.com/MadMaverick/message/608410150",
+        "https://stocktwits.com/MadMaverick/message/608715586",
+        "https://stocktwits.com/MadMaverick/message/609817218",
+        "https://stocktwits.com/MadMaverick/message/610768158",
+    ]
+    
+    # List to store all results
+    all_results = []
+    
+    for url in urls:
+        try:
+            response = requests.request("GET", url, headers=headers, data=payload)
+            response.raise_for_status()  # Raise an exception for bad status codes
+            
+            html = response.text
+            result = extract_required_data(html)
+            
+            all_results.append(result)
+            # store_data_in_db(result)
+            print(f"Successfully processed: {url}")
+            
+        except requests.RequestException as e:
+            print(f"Error processing {url}: {str(e)}")
+        except Exception as e:
+            print(f"Unexpected error processing {url}: {str(e)}")
+    
+    # Write all results as a proper JSON array
+    try:
+        with open("stocktwist_data.json", "w", encoding="utf-8") as f:
+            json.dump(all_results, f, indent=4, ensure_ascii=False)
+        print("Successfully wrote all data to stocktwist_data.json")
+    except Exception as e:
+        print(f"Error writing to file: {str(e)}")
 
-    result = extract_required_data(html)
-    print(json.dumps(result, indent=4, ensure_ascii=False))
-    # write the result to a file
-    with open("stocktwist_data.json", "w", encoding="utf-8") as f:
-        json.dump(result, f, indent=4, ensure_ascii=False)
-    store_data_in_db(result)
+    for result in all_results:
+        store_data_in_db(result)
 
