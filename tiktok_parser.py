@@ -41,7 +41,7 @@ def extract_json_from_html(html_content,url):
             result['collect_count'] = 0
 
     # Extract "authorName": "..."
-    author_match = re.search(r'"authorName"\s*:\s*"([^"]+)"', html_content)
+    author_match = re.search(r'"nickname"\s*:\s*"([^"]+)"', html_content)
     if author_match:
         result['username'] = author_match.group(1)
 
@@ -88,6 +88,7 @@ def extract_data():
         "https://www.tiktok.com/t/ZTjMKSuGg/",
         "https://vm.tiktok.com/ZMBchpuPm/",
         "https://www.tiktok.com/t/ZTjBHQea9/",
+        "https://vm.tiktok.com/ZMB92NmmS/",
     ]
     all_results = []
     for url in urls:
@@ -100,8 +101,8 @@ def extract_data():
         with open('tiktok_data.json', 'w', encoding='utf-8') as file:
             json.dump(all_results, file, indent=4, ensure_ascii=False)
 
-    for result in all_results:
-        store_data_in_db(result)
+    # for result in all_results:
+    #     store_data_in_db(result)
 
 if __name__ == "__main__":
     extract_data()

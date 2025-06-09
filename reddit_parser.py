@@ -45,6 +45,7 @@ def extract_data():
                         "likes": post_data.get("ups", 0),
                         "comments": post_data.get("num_comments", 0),
                         "platform": "Reddit",
+                        "username": post_data.get("author", ""),
                         "url": url
                     }
                     if filtered_post["description"] != "":
