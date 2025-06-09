@@ -4,16 +4,8 @@ import json
 import requests
 from dbOperations import store_data_in_db
 
-url = "https://www.instagram.com/reel/DIB_Mo5yR0F/"
 
-payload = {}
-headers = {
-  'Cookie': 'csrftoken=hM-q0p8Y6Q2ezYcFoF1qDu'
-}
-
-response = requests.get(url, headers=headers, data=payload)
-
-def parse_instagram_html(html_content):
+def parse_instagram_html(html_content,url):
     soup = BeautifulSoup(html_content, 'html.parser')
     
     # Extract meta description which contains likes, comments, and date
@@ -57,26 +49,31 @@ def parse_instagram_html(html_content):
 
 # Example usage
 if __name__ == "__main__":
-    # Pass the content directly to the function
-    html_content = response.text
     
-    # Parse the HTML
-    result = parse_instagram_html(html_content)
+    urls =["https://www.instagram.com/reel/DI_5YKJP_Ot/?igsh=N21teHpjazFpMHVs"]
+
+    payload = {}
+    headers = {
+    'Cookie': 'csrftoken=hM-q0p8Y6Q2ezYcFoF1qDu'
+    }
     
-    if result:
-        print("Page Name:", result['username'])
-        print("Likes:", result['likes'])
-        print("Comments:", result['comments'])
-        print("Date Posted:", result['date_posted'])
-        print("\nDescription:")
-        print(result['description'])
-        print("\nHashtags:")
-        print(result['hashtags'])
-    else:
-        print("Failed to parse Instagram content") 
+    all_results = []
 
-    # Store output in json file
-    with open('instagram_data.json', 'w', encoding='utf-8') as file:
-        json.dump(result, file, indent=4, ensure_ascii=False)
+    for url in urls:
+        response = requests.get(url, headers=headers, data=payload)
+        # Pass the content directly to the function
+        html_content = response.text
+        
+        # Parse the HTML
+        result = parse_instagram_html(html_content,url)
+        if result:
+            all_results.append(result)
 
-    store_data_in_db(result)
+            # Store output in json file
+        with open('instagram_data.json', 'w', encoding='utf-8') as file:
+            json.dump(all_results, file, indent=4, ensure_ascii=False)
+
+    for result in all_results:
+        store_data_in_db(result)
+
+    
