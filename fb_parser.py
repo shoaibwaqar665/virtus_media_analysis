@@ -6,17 +6,16 @@ import json
 
 def extract_facebook_data(text,url):
     # Define the regex pattern for time and reactions
-    pattern = r'(\d+h|\d+m)\s*·\s*Shared with Public.*?All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
+    pattern = r'All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
     
     # Search for the pattern in the text
     match = re.search(pattern, text, re.DOTALL)
-    
+   
     if match:
         # Extract the matched groups
-        time = match.group(1)  # e.g., "3h" or "45m"
-        reactions = match.group(2)
-        comments = match.group(3)
-        shares = match.group(4)
+        reactions = match.group(1)
+        comments = match.group(2)
+        shares = match.group(3)
         
         # Create a dictionary with the extracted data
         # convert the time in todays date and format should be April 4, 2025
@@ -28,7 +27,6 @@ def extract_facebook_data(text,url):
             'comments': comments,
             'shares': shares,
             'page_name': page_name,
-            'url': url,
             'platform': 'facebook',
             'url': url
         }
@@ -43,8 +41,7 @@ def extract_facebook_data_from_reel_response(text,url):
     Extract specific data from Facebook response using regex patterns
     """
     try:
-        # Print the raw text for debugging
-        print("Raw text:", text)
+       
         
         # Try different username patterns
         username_patterns = [
@@ -59,8 +56,7 @@ def extract_facebook_data_from_reel_response(text,url):
             match = re.search(pattern, text)
             if match:
                 username = match.group(1)
-                print(f"Found username using pattern: {pattern}")
-                print(f"Match: {match.group(0)}")
+               
                 break
         
         # Pattern for reactions/likes
@@ -77,7 +73,7 @@ def extract_facebook_data_from_reel_response(text,url):
 
         # Create data dictionary
         data = {
-            'username': username,
+            # 'username': username,
             'reactions': reactions_match.group(1) if reactions_match else None,
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
@@ -86,11 +82,7 @@ def extract_facebook_data_from_reel_response(text,url):
         }
 
         # Print debug information
-        print("\nExtracted data:")
-        print("Username:", username)
-        print("Reactions:", reactions_match.group(1) if reactions_match else None)
-        print("Comments:", comments_match.group(1) if comments_match else None)
-        print("Shares:", shares_match.group(1) if shares_match else None)
+       
 
         return data
     except Exception as e:
@@ -101,20 +93,15 @@ def extract_facebook_data_from_reel_response(text,url):
         return None
 
 def extract_page_name(url):
-    """
-    Extract the page name from a Facebook URL.
-    Example: https://www.facebook.com/Lateefon.Ki.Dunya/posts/... -> Lateefon.Ki.Dunya
-    """
+  
     try:
-        print("Original URL:", url)
-        
+       
         # Remove any query parameters and fragments
         url = url.split('?')[0].split('#')[0]
-        print("URL after removing query params:", url)
-        
+    
         # Split the URL by '/' and get the part after 'facebook.com'
         parts = url.split('/')
-        print("URL parts:", parts)
+       
       
         return parts[3]
     except (ValueError, IndexError) as e:
@@ -141,7 +128,7 @@ def handle_response(response, responses, reel_id,url):
                 extracted_data = extract_facebook_data_from_reel_response(str(response_data),url)
                 if extracted_data:
                     responses.append(extracted_data)
-                print(f"Captured response from: {response.url}")
+               
     except Exception as e:
         print(f"Error handling response from {response.url}: {str(e)}")
 
@@ -159,7 +146,7 @@ def extract_data():
         # Extract reel ID from the URL
         navigation_url = "https://www.facebook.com/reel/1147282673869577"
         reel_id = navigation_url.split("reel/")[-1].split("?")[0].split("#")[0]
-        print(f"Monitoring requests for reel ID: {reel_id}")
+       
         
         # Listen for network requests with the specific reel ID
         page.on("response", lambda response: handle_response(response, responses, reel_id, navigation_url))
@@ -175,19 +162,19 @@ def extract_data():
             
             # Write only extracted data to file
             if responses:
-                filename = f'reel_data_{reel_id}.json'
+                filename = f'fb_data.json'
                 with open(filename, 'w', encoding='utf-8') as f:
-                    json.dump(responses[0], f, indent=4)  # Save only the first extracted data
-                print(f"Saved extracted data to {filename}")
+                    json.dump(responses[0], f, indent=4, ensure_ascii=False)  # Save only the first extracted data
+               
             
             browser.close()
             return
         
         content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
         extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
-        print('extracted_data', extracted_data)
-        with open('fb_data.json', 'w') as f:
-            json.dump(extracted_data, f)
+        
+        with open('fb_data.json', 'w', encoding='utf-8') as f:
+            json.dump(extracted_data, f, indent=4, ensure_ascii=False)
        
         browser.close()
         return
