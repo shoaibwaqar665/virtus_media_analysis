@@ -117,8 +117,8 @@ def handle_response(response, responses, reel_id,url):
             if reel_id in str(response_data):
                 # Extract specific data from the response
                 # write response_data to a file
-                with open('fb_response_data_reel.txt', 'w', encoding='utf-8') as f:
-                    f.write(str(response_data))
+                # with open('fb_response_data_reel.txt', 'w', encoding='utf-8') as f:
+                #     f.write(str(response_data))
                 extracted_data = extract_facebook_data_from_reel_response(str(response_data),url)
                 if extracted_data:
                     responses.append(extracted_data)
@@ -167,9 +167,9 @@ def extract_data():
             # class changes through ubuntu chrome
             content_text = page.query_selector("div[class*='x6s0dn4 xi81zsa x78zum5 x6prxxf x13a6bvl xvq8zen xdj266r xat24cr x1c1uobl xyri2b x80vd3b x1q0q8m5 xso031l x1diwwjn xbmvrgn x1y1aw1k x10b6aqq']")
             
-            # write content_text to a file
-            with open('fb_content_text.txt', 'w', encoding='utf-8') as f:
-                f.write(content_text.text_content())
+            # # write content_text to a file
+            # with open('fb_content_text.txt', 'w', encoding='utf-8') as f:
+            #     f.write(content_text.text_content())
             
             extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
             print('extracted_data',extracted_data)
