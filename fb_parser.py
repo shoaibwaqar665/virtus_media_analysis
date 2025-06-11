@@ -9,6 +9,7 @@ from dbOperations import store_data_in_db
 def extract_facebook_data(text,url):
     # Define the regex pattern for time and reactions
     pattern = r'All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
+    # pattern = r'(\d+h|\d+m)\s*·\s*Shared with Public.*?All reactions:(\d+\.?\d*K?)(\d+)\s*comments\s*(\d+\.?\d*K?)\s*shares'
     
     # Search for the pattern in the text
     match = re.search(pattern, text, re.DOTALL)
@@ -24,6 +25,7 @@ def extract_facebook_data(text,url):
         today = datetime.now().strftime("%B %d, %Y")
         page_name = extract_page_name(url)
         data = {
+            'username': page_name,
             'time': today,
             'likes': reactions,
             'comments': comments,
@@ -128,7 +130,7 @@ def handle_response(response, responses, reel_id,url):
 all_results = []
 def extract_data():
     urls = [
-        "https://www.facebook.com/reel/1394965231510586",
+        "https://www.facebook.com/SaeenKaPage/posts/pfbid02DxGWcL8sMRMDAKGJvKAQqfmqDFvMtHPpqzj7M1y2Ko8bACHTVyn65cY1WVx8Bp5Xl",
     ]
     for url in urls:
         with sync_playwright() as p:
@@ -161,13 +163,16 @@ def extract_data():
                 
                 browser.close()
                 return
+            time.sleep(5)
+            # class changes through ubuntu chrome
+            content_text = page.query_selector("div[class*='x6s0dn4 xi81zsa x78zum5 x6prxxf x13a6bvl xvq8zen xdj266r xat24cr x1c1uobl xyri2b x80vd3b x1q0q8m5 xso031l x1diwwjn xbmvrgn x1y1aw1k x10b6aqq']")
             
-            content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
             # write content_text to a file
             with open('fb_content_text.txt', 'w', encoding='utf-8') as f:
                 f.write(content_text.text_content())
             
             extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
+            print('extracted_data',extracted_data)
             if extracted_data:
                 all_results.append(extracted_data)
         
@@ -184,5 +189,5 @@ if __name__ == "__main__":
         filename = f'fb_data.json'
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
-        # for result in all_results:
-        #     store_data_in_db(result)
+        for result in all_results:
+            store_data_in_db(result)
