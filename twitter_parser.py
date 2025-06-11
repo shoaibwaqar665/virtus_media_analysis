@@ -53,14 +53,14 @@ def extract_tweet_data(url):
     # Final JSON structure
     result = {
         "likes": most_engaged.get("likes", 0),
-        "reshared_count": most_engaged.get("reposts", 0),
+        "shares": most_engaged.get("reposts", 0),
         "comments": most_engaged.get("replies", 0),
         "play_count": most_engaged.get("views", 0),
         "username": username,
         "hashtags": hashtags,
         "date_posted": time_data,
         "url": url,
-        "platform": "Twitter",
+        "platform": "X",
         "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 

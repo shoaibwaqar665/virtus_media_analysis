@@ -8,7 +8,8 @@
         "hashtags": [],
         "date_posted": "March 18, 2025 02:23 PM",
         "url": "https://x.com/PennyboisTrades/status/1902002822889046497",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:39:57"
     },
     {
         "likes": 0,
@@ -19,7 +20,8 @@
         "hashtags": [],
         "date_posted": "",
         "url": "https://x.com/PennyboisTrades/status/1902768934673113535",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:40:15"
     },
     {
         "likes": 4,
@@ -33,18 +35,20 @@
         ],
         "date_posted": "March 25, 2025 07:38 PM",
         "url": "https://twitter.com/PennyboisTrades/status/1904618833198903426",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:40:35"
     },
     {
-        "likes": 2,
-        "reshared_count": 2,
-        "comments": 2,
-        "play_count": 2796,
+        "likes": 0,
+        "reshared_count": 0,
+        "comments": 0,
+        "play_count": 0,
         "username": "PennyboisTrades",
         "hashtags": [],
-        "date_posted": "March 31, 2025 05:25 PM",
+        "date_posted": "",
         "url": "https://x.com/PennyboisTrades/status/1906759729105285571",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:40:46"
     },
     {
         "likes": 4,
@@ -59,18 +63,20 @@
         ],
         "date_posted": "April 07, 2025 05:39 PM",
         "url": "https://x.com/PennyboisTrades/status/1909300117187813393",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:41:05"
     },
     {
-        "likes": 2,
+        "likes": 0,
         "reshared_count": 0,
-        "comments": 3,
-        "play_count": 1759,
+        "comments": 0,
+        "play_count": 0,
         "username": "MrStockLockPro1",
         "hashtags": [],
-        "date_posted": "March 31, 2025 05:25 PM",
+        "date_posted": "",
         "url": "https://x.com/MrStockLockPro1/status/1911846302947951071",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:41:17"
     },
     {
         "likes": 5,
@@ -84,7 +90,8 @@
         ],
         "date_posted": "April 24, 2025 07:36 PM",
         "url": "https://x.com/PennyboisTrades/status/1915489929724862504",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:41:28"
     },
     {
         "likes": 0,
@@ -95,7 +102,8 @@
         "hashtags": [],
         "date_posted": "April 30, 2025 11:04 PM",
         "url": "https://x.com/MrStockLockPro1/status/1918420993141362894",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:41:38"
     },
     {
         "likes": 3,
@@ -106,28 +114,31 @@
         "hashtags": [],
         "date_posted": "May 06, 2025 02:53 PM",
         "url": "https://x.com/PennyboisTrades/status/1919767580815868165?t=EqOYQg_as6igj0kE5F-psQ&s=19",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:41:49"
     },
     {
         "likes": 3,
         "reshared_count": 0,
-        "comments": 7,
+        "comments": 6,
         "play_count": 840,
         "username": "PennyboisTrades",
         "hashtags": [],
         "date_posted": "May 13, 2025 05:05 PM",
         "url": "https://x.com/PennyboisTrades/status/1922337413546049885",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:42:02"
     },
     {
-        "likes": 8491,
-        "reshared_count": 1544,
+        "likes": 8485,
+        "reshared_count": 1536,
         "comments": 353,
-        "play_count": 4716106,
+        "play_count": 4716133,
         "username": "PennyboisTrades",
         "hashtags": [],
         "date_posted": "March 18, 2025 04:52 PM",
         "url": "https://x.com/PennyboisTrades/status/1902040300274503850",
-        "platform": "Twitter"
+        "platform": "X",
+        "scraped_at": "2025-06-12 01:42:12"
     }
 ]

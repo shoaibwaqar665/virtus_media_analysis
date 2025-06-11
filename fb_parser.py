@@ -26,7 +26,7 @@ def extract_facebook_data(text,url):
         page_name = extract_page_name(url)
         data = {
             'username': page_name,
-            'time': today,
+            'date_posted': today,
             'likes': reactions,
             'comments': comments,
             'shares': shares,
