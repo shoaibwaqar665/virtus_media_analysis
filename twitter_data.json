@@ -1,7 +1,7 @@
 [
     {
         "likes": 5,
-        "reshared_count": 2,
+        "shares": 2,
         "comments": 2,
         "play_count": 1047,
         "username": "PennyboisTrades",
@@ -13,7 +13,7 @@
     },
     {
         "likes": 0,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 0,
         "username": "PennyboisTrades",
@@ -25,7 +25,7 @@
     },
     {
         "likes": 4,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 627,
         "username": "PennyboisTrades",
@@ -40,7 +40,7 @@
     },
     {
         "likes": 0,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 0,
         "username": "PennyboisTrades",
@@ -52,7 +52,7 @@
     },
     {
         "likes": 4,
-        "reshared_count": 3,
+        "shares": 3,
         "comments": 26,
         "play_count": 2191,
         "username": "PennyboisTrades",
@@ -68,7 +68,7 @@
     },
     {
         "likes": 0,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 0,
         "username": "MrStockLockPro1",
@@ -80,7 +80,7 @@
     },
     {
         "likes": 5,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 16,
         "play_count": 2504,
         "username": "PennyboisTrades",
@@ -95,7 +95,7 @@
     },
     {
         "likes": 0,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 524,
         "username": "MrStockLockPro1",
@@ -107,7 +107,7 @@
     },
     {
         "likes": 3,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 0,
         "play_count": 781,
         "username": "PennyboisTrades",
@@ -119,7 +119,7 @@
     },
     {
         "likes": 3,
-        "reshared_count": 0,
+        "shares": 0,
         "comments": 6,
         "play_count": 840,
         "username": "PennyboisTrades",
@@ -131,7 +131,7 @@
     },
     {
         "likes": 8485,
-        "reshared_count": 1536,
+        "shares": 1536,
         "comments": 353,
         "play_count": 4716133,
         "username": "PennyboisTrades",

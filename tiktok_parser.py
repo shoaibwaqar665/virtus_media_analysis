@@ -25,7 +25,7 @@ def extract_json_from_html(html_content,url):
             stats_data = json.loads(stats_match.group(1))
             # Map TikTok stats to StockTwits format
             result['likes'] = stats_data.get('diggCount', 0)
-            result['reshared_count'] = stats_data.get('shareCount', 0)
+            result['shares'] = stats_data.get('shareCount', 0)
             result['comments'] = stats_data.get('commentCount', 0)
             result['play_count'] = stats_data.get('playCount', 0)
             # Convert collectCount to integer
@@ -36,7 +36,7 @@ def extract_json_from_html(html_content,url):
             result['scraped_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         except json.JSONDecodeError:
             result['likes'] = 0
-            result['reshared_count'] = 0
+            result['shares'] = 0
             result['comments'] = 0
             result['play_count'] = 0
             result['collect_count'] = 0
