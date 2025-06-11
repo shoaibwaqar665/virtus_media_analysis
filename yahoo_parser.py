@@ -37,7 +37,8 @@ def get_full_historical_data(symbol: str, interval="1wk", range_period="3mo"):
             "close": indicators["close"][i],
             "volume": indicators["volume"][i],
             "adjclose": adjclose[i],
-            "scraped_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "scraped_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "frequency": "weekly"
         }
         full_data.append(entry)
 
