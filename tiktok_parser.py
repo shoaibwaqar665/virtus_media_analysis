@@ -40,6 +40,7 @@ def extract_json_from_html(html_content,url):
             result['comments'] = 0
             result['play_count'] = 0
             result['collect_count'] = 0
+            result['scraped_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Extract "authorName": "..."
     author_match = re.search(r'"nickname"\s*:\s*"([^"]+)"', html_content)
@@ -102,8 +103,8 @@ def extract_data():
         with open('tiktok_data.json', 'w', encoding='utf-8') as file:
             json.dump(all_results, file, indent=4, ensure_ascii=False)
 
-    # for result in all_results:
-    #     store_data_in_db(result)
+    for result in all_results:
+        store_data_in_db(result)
 
 if __name__ == "__main__":
     extract_data()
