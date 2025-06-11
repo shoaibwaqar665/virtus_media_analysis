@@ -158,8 +158,8 @@ def main():
         'server_id': guild_id,
         'messages': all_messages,
         'platform': 'discord',
-        'url': url
-        
+        'url': channel_url,
+        'scraped_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     # Write the cleaned data to a file
     with open('discord_data.json', 'w', encoding='utf-8') as f:
