@@ -43,7 +43,8 @@ def extract_required_data(html_content):
                         "date_posted": datetime.strptime(first_msg.get("created_at"), "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y %I:%M %p"),
                         "username": first_msg.get("user", {}).get("username"),
                         "platform": "StockTwits",
-                        "url": url
+                        "url": url,
+                        "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
                     
 

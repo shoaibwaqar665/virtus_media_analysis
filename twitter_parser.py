@@ -61,7 +61,7 @@ def extract_tweet_data(url):
         "date_posted": time_data,
         "url": url,
         "platform": "Twitter",
-        
+        "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     return result

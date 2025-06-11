@@ -30,7 +30,8 @@ def extract_facebook_data(text,url):
             'shares': shares,
             'page_name': page_name,
             'platform': 'facebook',
-            'url': url
+            'url': url,
+            "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
         return data
@@ -80,7 +81,8 @@ def extract_facebook_data_from_reel_response(text,url):
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
             'url': url,
-            'platform': 'facebook'
+            'platform': 'facebook',
+            "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
         # Print debug information

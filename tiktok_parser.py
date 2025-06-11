@@ -33,6 +33,7 @@ def extract_json_from_html(html_content,url):
             result['platform'] = "TikTok"
             result['url'] = url
             result['collect_count'] = int(collect_count) if collect_count.isdigit() else 0
+            result['scraped_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         except json.JSONDecodeError:
             result['likes'] = 0
             result['reshared_count'] = 0

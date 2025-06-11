@@ -2,7 +2,7 @@ import requests
 import datetime
 import json
 
-def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
+def get_full_historical_data(symbol: str, interval="1wk", range_period="3mo"):
     url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
     
     params = {
@@ -36,11 +36,12 @@ def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
             "low": indicators["low"][i],
             "close": indicators["close"][i],
             "volume": indicators["volume"][i],
-            "adjclose": adjclose[i]
+            "adjclose": adjclose[i],
+            "scraped_at": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         full_data.append(entry)
 
-    # Sort data by date
+    # Sort data by date (newest first)
     full_data_sorted = sorted(full_data, key=lambda x: x["date"], reverse=True)
 
     return full_data_sorted
@@ -49,10 +50,10 @@ def get_full_historical_data(symbol: str, interval="1d", range_period="1mo"):
 # Example Usage
 if __name__ == "__main__":
     symbol = "SHOT"
-    data = get_full_historical_data(symbol, range_period="3mo")
+    data = get_full_historical_data(symbol, interval="1wk", range_period="3mo")
 
     # Write sorted data to JSON file
     with open('yahoo_data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-    print("Data saved to yahoo_data.json")
+    print("Weekly data saved to yahoo_data.json")

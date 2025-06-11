@@ -3,7 +3,7 @@ import re
 import json
 import requests
 from dbOperations import store_data_in_db
-
+from datetime import datetime
 
 def parse_instagram_html(html_content,url):
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -42,7 +42,8 @@ def parse_instagram_html(html_content,url):
             'description': description,
             'hashtags': hashtags,
             'platform': "Instagram",
-            'url': url
+            'url': url,
+            "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
     
     return None

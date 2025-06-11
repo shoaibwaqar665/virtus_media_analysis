@@ -70,7 +70,7 @@ def count_messages_after(message_id, all_messages):
     
     return count if found_message else -1
 
-def get_channel_messages(channel_id, channel_name):
+def get_channel_messages(channel_id, channel_name, ):
     channel_url = f"{base_url}/channels/{channel_id}"
     messages_url = f"{channel_url}/messages?limit=50"
     
@@ -106,7 +106,8 @@ def get_channel_messages(channel_id, channel_name):
             'total_reactions': total_reactions,
             'channel_name': channel_name,
             'channel_id': channel_id,
-            'url': url
+            'url': channel_url,
+            'scraped_at': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
         cleaned_messages.append(cleaned_message)

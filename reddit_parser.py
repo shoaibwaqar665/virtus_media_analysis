@@ -1,7 +1,7 @@
 import requests
 import json
 from dbOperations import store_data_in_db
-
+from datetime import datetime
 def extract_data():
     
     # Custom headers to avoid 429 Too Many Requests or 403 Forbidden
@@ -46,7 +46,8 @@ def extract_data():
                         "comments": post_data.get("num_comments", 0),
                         "platform": "Reddit",
                         "username": post_data.get("author", ""),
-                        "url": url
+                        "url": url,
+                        "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     }
                     if filtered_post["description"] != "":
                         all_results.append(filtered_post)
