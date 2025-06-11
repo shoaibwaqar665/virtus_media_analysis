@@ -39,29 +39,16 @@ def extract_facebook_data(text,url):
         return None
 
 
-def extract_facebook_data_from_reel_response(text,url):
+def extract_facebook_data_from_reel_response(text, url):
     """
     Extract specific data from Facebook response using regex patterns
     """
     try:
-       
-        
-        # Try different username patterns
-        username_patterns = [
-            r'User\\",\\"name\\":\\"([^"]+)\\"',  # Original pattern
-            r'User\\",\\"name\\":\\"([^"]+)"',    # Without trailing backslash
-            r'name\\":\\"([^"]+)\\"',             # Simpler pattern
-            r'name\\":\\"([^"]+)"'                # Simplest pattern
-        ]
-        
-        username = None
-        for pattern in username_patterns:
-            match = re.search(pattern, text)
-            if match:
-                username = match.group(1)
-               
-                break
-        
+        # Updated pattern to specifically match "User","name":"Some Name"
+        username_pattern = r'"User","name":"([^"]+)"'
+        match = re.search(username_pattern, text)
+        username = match.group(1) if match else None
+
         # Pattern for reactions/likes
         reactions_pattern = r'"likers":\{"count":(\d+)\}'
         # Pattern for comments
@@ -76,7 +63,7 @@ def extract_facebook_data_from_reel_response(text,url):
 
         # Create data dictionary
         data = {
-            # 'username': username,
+            'username': username,
             'likes': reactions_match.group(1) if reactions_match else None,
             'comments': comments_match.group(1) if comments_match else None,
             'shares': shares_match.group(1) if shares_match else None,
@@ -85,10 +72,8 @@ def extract_facebook_data_from_reel_response(text,url):
             "scraped_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
-        # Print debug information
-       
-
         return data
+
     except Exception as e:
         print(f"Error extracting data: {str(e)}")
         print(f"Error type: {type(e)}")
@@ -129,6 +114,9 @@ def handle_response(response, responses, reel_id,url):
             # Check if the response contains our target ID
             if reel_id in str(response_data):
                 # Extract specific data from the response
+                # write response_data to a file
+                with open('fb_response_data_reel.txt', 'w', encoding='utf-8') as f:
+                    f.write(str(response_data))
                 extracted_data = extract_facebook_data_from_reel_response(str(response_data),url)
                 if extracted_data:
                     responses.append(extracted_data)
@@ -175,6 +163,10 @@ def extract_data():
                 return
             
             content_text = page.query_selector("div[class*='x6s0dn4 x78zum5 xdt5ytf x5yr21d xl56j7k x10l6tqk x17qophe x13vifvy xh8yej3']")
+            # write content_text to a file
+            with open('fb_content_text.txt', 'w', encoding='utf-8') as f:
+                f.write(content_text.text_content())
+            
             extracted_data = extract_facebook_data(content_text.text_content(),navigation_url)
             if extracted_data:
                 all_results.append(extracted_data)
@@ -192,5 +184,5 @@ if __name__ == "__main__":
         filename = f'fb_data.json'
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
-        for result in all_results:
-            store_data_in_db(result)
+        # for result in all_results:
+        #     store_data_in_db(result)
