@@ -16,7 +16,7 @@ def extract_tweet_data(url):
         context = browser.new_context()
         page = context.new_page()
         page.goto(url, timeout=60000)
-        time.sleep(5)  # Let JS render
+        time.sleep(10)  # Let JS render
         html = page.content()
         browser.close()
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
         if tweet_data:
             all_results.append(tweet_data)
     if all_results:
-        filename = f'twitter_data.json'
+        filename = f'twitter_data_.json'
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)
 
