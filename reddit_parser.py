@@ -2,7 +2,7 @@ import requests
 import json
 from dbOperations import store_data_in_db
 from datetime import datetime
-def extract_data():
+def reddit_main(urls):
     
     # Custom headers to avoid 429 Too Many Requests or 403 Forbidden
     headers = {
@@ -15,15 +15,15 @@ def extract_data():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) RedditScraper/1.0"
     }
 
-    urls = [
-        "https://www.reddit.com/r/pennystocks/comments/1jewiqr/a_unique_beverage_company_caught_my_eye_and/",
-        "https://www.reddit.com/r/pennystocks/comments/1jgg8bo/why_im_high_on_beverages_right_now_and_why_you/",
-        "https://www.reddit.com/r/pennystocks/comments/1jpo611/hear_me_out_theres_some_recent_catalysts_on_my/",
-        "https://www.reddit.com/r/pennystocks/comments/1jqhr68/after_a_fundamental_breakdown_yesterday_heres_how/",
-        "https://www.reddit.com/r/pennystocks/comments/1jtkvwa/weekly_watchlist_shot_heating_up_while_prop/",
-        "https://www.reddit.com/r/pennystocks/comments/1jvxtur/markets_pop_on_surprise_pause_heres_what_im/",
+    # urls = [
+    #     "https://www.reddit.com/r/pennystocks/comments/1jewiqr/a_unique_beverage_company_caught_my_eye_and/",
+    #     "https://www.reddit.com/r/pennystocks/comments/1jgg8bo/why_im_high_on_beverages_right_now_and_why_you/",
+    #     "https://www.reddit.com/r/pennystocks/comments/1jpo611/hear_me_out_theres_some_recent_catalysts_on_my/",
+    #     "https://www.reddit.com/r/pennystocks/comments/1jqhr68/after_a_fundamental_breakdown_yesterday_heres_how/",
+    #     "https://www.reddit.com/r/pennystocks/comments/1jtkvwa/weekly_watchlist_shot_heating_up_while_prop/",
+    #     "https://www.reddit.com/r/pennystocks/comments/1jvxtur/markets_pop_on_surprise_pause_heres_what_im/",
 
-    ]
+    # ]
     all_results = []
     for url in urls:
         url = url[:-1]
@@ -62,5 +62,5 @@ def extract_data():
     for result in all_results:
         store_data_in_db(result)
 
-if __name__ == "__main__":
-    extract_data()
+# if __name__ == "__main__":
+#     extract_data()

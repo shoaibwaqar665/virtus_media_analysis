@@ -85,13 +85,13 @@ def extract_json_from_html(html_content,url):
 
 # store_data_in_db(cleaned_data)
 
-def extract_data():
-    urls = [
-        "https://www.tiktok.com/t/ZTjMKSuGg/",
-        "https://vm.tiktok.com/ZMBchpuPm/",
-        "https://www.tiktok.com/t/ZTjBHQea9/",
-        "https://vm.tiktok.com/ZMB92NmmS/",
-    ]
+def tiktok_main(urls):
+    # urls = [
+    #     "https://www.tiktok.com/t/ZTjMKSuGg/",
+    #     "https://vm.tiktok.com/ZMBchpuPm/",
+    #     "https://www.tiktok.com/t/ZTjBHQea9/",
+    #     "https://vm.tiktok.com/ZMB92NmmS/",
+    # ]
     all_results = []
     for url in urls:
         response = requests.get(url, headers=headers, data=payload)
@@ -106,6 +106,4 @@ def extract_data():
     for result in all_results:
         store_data_in_db(result)
 
-if __name__ == "__main__":
-    extract_data()
 

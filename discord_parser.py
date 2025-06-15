@@ -114,7 +114,7 @@ def get_channel_messages(channel_id, channel_name, ):
     
     return cleaned_messages
 
-def main():
+def discord_main():
     # Get server info using the first channel ID
     channel_id = "749484877883375626"  # Initial channel ID to get server info
     channel_url = f"{base_url}/channels/{channel_id}"
@@ -181,5 +181,5 @@ def main():
         print(f"- {member}")
 
 if __name__ == "__main__":
-    main()
+    discord_main()
 

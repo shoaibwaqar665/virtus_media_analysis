@@ -56,14 +56,14 @@ def extract_required_data(html_content):
     return {}
 
 # Example usage
-if __name__ == "__main__":
-    urls = [
-        "https://stocktwits.com/pbelo/message/612322988",
-        "https://stocktwits.com/MadMaverick/message/608410150",
-        "https://stocktwits.com/MadMaverick/message/608715586",
-        "https://stocktwits.com/MadMaverick/message/609817218",
-        "https://stocktwits.com/MadMaverick/message/610768158",
-    ]
+def stocktwits_main(urls):
+    # urls = [
+    #     "https://stocktwits.com/pbelo/message/612322988",
+    #     "https://stocktwits.com/MadMaverick/message/608410150",
+    #     "https://stocktwits.com/MadMaverick/message/608715586",
+    #     "https://stocktwits.com/MadMaverick/message/609817218",
+    #     "https://stocktwits.com/MadMaverick/message/610768158",
+    # ]
     
     # List to store all results
     all_results = []

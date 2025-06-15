@@ -49,7 +49,7 @@ def get_full_historical_data(symbol: str, interval="1wk", range_period="3mo"):
 
 
 # Example Usage
-if __name__ == "__main__":
+def yahoo_finance_main():
     symbol = "SHOT"
     data = get_full_historical_data(symbol, interval="1wk", range_period="3mo")
 

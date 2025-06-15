@@ -67,27 +67,28 @@ def extract_tweet_data(url):
     return result
 
 # Example usage
-if __name__ == "__main__":
+def twitter_main(urls):
+    # urls = [
+    #     "https://x.com/PennyboisTrades/status/1902002822889046497",
+    #     "https://x.com/PennyboisTrades/status/1902768934673113535",
+    #     "https://twitter.com/PennyboisTrades/status/1904618833198903426",
+    #     "https://x.com/PennyboisTrades/status/1906759729105285571",
+    #     "https://x.com/PennyboisTrades/status/1909300117187813393",
+    #     "https://x.com/MrStockLockPro1/status/1911846302947951071",
+    #     "https://x.com/PennyboisTrades/status/1915489929724862504",
+    #     "https://x.com/MrStockLockPro1/status/1918420993141362894",
+    #     "https://x.com/PennyboisTrades/status/1919767580815868165?t=EqOYQg_as6igj0kE5F-psQ&s=19",
+    #     "https://x.com/PennyboisTrades/status/1922337413546049885",
+    #     "https://x.com/PennyboisTrades/status/1902040300274503850",
+    # ]
     all_results = []
-    urls = [
-        "https://x.com/PennyboisTrades/status/1902002822889046497",
-        "https://x.com/PennyboisTrades/status/1902768934673113535",
-        "https://twitter.com/PennyboisTrades/status/1904618833198903426",
-        "https://x.com/PennyboisTrades/status/1906759729105285571",
-        "https://x.com/PennyboisTrades/status/1909300117187813393",
-        "https://x.com/MrStockLockPro1/status/1911846302947951071",
-        "https://x.com/PennyboisTrades/status/1915489929724862504",
-        "https://x.com/MrStockLockPro1/status/1918420993141362894",
-        "https://x.com/PennyboisTrades/status/1919767580815868165?t=EqOYQg_as6igj0kE5F-psQ&s=19",
-        "https://x.com/PennyboisTrades/status/1922337413546049885",
-        "https://x.com/PennyboisTrades/status/1902040300274503850",
-    ]
+    
     for url in urls:
         tweet_data = extract_tweet_data(url)
         if tweet_data:
             all_results.append(tweet_data)
     if all_results:
-        filename = f'twitter_data_.json'
+        filename = f'twitter_data.json'
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(all_results, f, indent=4, ensure_ascii=False)
 

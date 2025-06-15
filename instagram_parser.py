@@ -49,9 +49,9 @@ def parse_instagram_html(html_content,url):
     return None
 
 # Example usage
-if __name__ == "__main__":
+def instagram_main(urls):
     
-    urls =["https://www.instagram.com/reel/DI_5YKJP_Ot/?igsh=N21teHpjazFpMHVs"]
+    # urls =["https://www.instagram.com/reel/DI_5YKJP_Ot/?igsh=N21teHpjazFpMHVs"]
 
     payload = {}
     headers = {

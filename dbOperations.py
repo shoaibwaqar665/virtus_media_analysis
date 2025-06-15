@@ -37,6 +37,3 @@ def get_urls_from_db():
     }
     
     return result
-
-if __name__ == "__main__":
-    print(get_urls_from_db())

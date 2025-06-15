@@ -128,10 +128,10 @@ def handle_response(response, responses, reel_id,url):
         print(f"Error handling response from {response.url}: {str(e)}")
 
 all_results = []
-def extract_data():
-    urls = [
-        "https://www.facebook.com/SaeenKaPage/posts/pfbid02DxGWcL8sMRMDAKGJvKAQqfmqDFvMtHPpqzj7M1y2Ko8bACHTVyn65cY1WVx8Bp5Xl",
-    ]
+def facebook_main(urls):
+        # urls = [
+        #     "https://www.facebook.com/SaeenKaPage/posts/pfbid02DxGWcL8sMRMDAKGJvKAQqfmqDFvMtHPpqzj7M1y2Ko8bACHTVyn65cY1WVx8Bp5Xl",
+        # ]
     for url in urls:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=False, slow_mo=100)
@@ -177,17 +177,18 @@ def extract_data():
                 all_results.append(extracted_data)
         
             browser.close()
-            return
+
+            if all_results:
+                filename = f'fb_data.json'
+                with open(filename, 'w', encoding='utf-8') as f:
+                    json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
+                for result in all_results:
+                    store_data_in_db(result)
         
     
                 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    extract_data()
-    if all_results:
-        filename = f'fb_data.json'
-        with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(all_results, f, indent=4, ensure_ascii=False)  # Save only the first extracted data
-        for result in all_results:
-            store_data_in_db(result)
+#     facebook_main(urls)
+    
