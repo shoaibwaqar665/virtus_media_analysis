@@ -49,3 +49,5 @@ flask_session/
 logs/
 
 discord_data.json
+channels_data.json
+channels_data.csv
